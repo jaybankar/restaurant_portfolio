@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Management System — Smart Restaurant Management Solution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --gold: #D4A853; --gold-light: #F5C842;
+            --dark: #0D0D0D; --dark2: #141414; --dark3: #1E1E1E;
+            --text: #E8E8E8; --text-muted: #888; --green: #2ECC71;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); color: var(--text); overflow-x: hidden; }
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 60px; background: rgba(13,13,13,0.92);
+            backdrop-filter: blur(20px); border-bottom: 1px solid rgba(212,168,83,0.15);
+        }
+        .nav-logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 800; background: linear-gradient(135deg, var(--gold), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 36px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-cta { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #000; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,168,83,0.4); }
+        .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 120px 60px 80px; }
+        .hero-bg { position: absolute; inset: 0; background: #0D0D0D; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(13,13,13,0.95) 50%, rgba(212,168,83,0.08) 100%); }
+        .hero-content { position: relative; max-width: 700px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(212,168,83,0.12); border: 1px solid rgba(212,168,83,0.3); border-radius: 50px; padding: 8px 18px; margin-bottom: 28px; font-size: 13px; font-weight: 600; color: var(--gold); }
+        .hero-badge span { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(42px, 5vw, 72px); font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
+        .hero h1 em { font-style: normal; background: linear-gradient(135deg,var(--gold),var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .hero p { font-size: 18px; color: var(--text-muted); line-height: 1.7; margin-bottom: 40px; max-width: 560px; }
+        .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+        .btn-primary { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #000; padding: 16px 36px; border-radius: 10px; font-weight: 700; font-size: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(212,168,83,0.45); }
+        .btn-secondary { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.2); padding: 16px 36px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; transition: border-color 0.3s, color 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+        .hero-stats { position: absolute; right: 60px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px; }
+        .stat-card { background: rgba(30,30,30,0.9); border: 1px solid rgba(212,168,83,0.15); border-radius: 16px; padding: 20px 28px; text-align: center; backdrop-filter: blur(20px); animation: floatUp 3s ease-in-out infinite alternate; }
+        .stat-card:nth-child(2) { animation-delay: 0.5s; }
+        .stat-card:nth-child(3) { animation-delay: 1s; }
+        @keyframes floatUp { from{transform:translateY(0);} to{transform:translateY(-10px);} }
+        .stat-num { font-size: 36px; font-weight: 900; background: linear-gradient(135deg,var(--gold),var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        section { padding: 100px 60px; }
+        .section-tag { display: inline-block; background: rgba(212,168,83,0.1); border: 1px solid rgba(212,168,83,0.25); border-radius: 50px; padding: 6px 16px; font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 52px); font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+        .section-title em { font-style: normal; background: linear-gradient(135deg,var(--gold),var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .section-sub { font-size: 17px; color: var(--text-muted); max-width: 540px; line-height: 1.7; }
+        .pos-section { background: var(--dark2); }
+        .pos-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .pos-image-wrap { border-radius: 20px; overflow: hidden; border: 1px solid rgba(212,168,83,0.2); box-shadow: 0 40px 80px rgba(0,0,0,0.6); position: relative; }
+        .pos-image-wrap img { width: 100%; display: block; }
+        .pos-badge { position: absolute; top: 16px; left: 16px; background: linear-gradient(135deg,var(--gold),var(--gold-light)); color: #000; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 50px; letter-spacing: 0.5px; }
+        .waiter-section { background: var(--dark); }
+        .waiter-inner { max-width: 1200px; margin: 0 auto; }
+        .waiter-screens { display: grid; grid-template-columns: 1.2fr 0.9fr; gap: 24px; align-items: start; margin-top: 48px; }
+        .waiter-screen { overflow: hidden; border: 1px solid rgba(212,168,83,0.2); border-radius: 16px; background: var(--dark3); box-shadow: 0 24px 48px rgba(0,0,0,0.35); }
+        .waiter-screen img { width: 100%; height: auto; display: block; }
+        .waiter-screen figcaption { padding: 14px 18px; color: var(--text-muted); font-size: 13px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 60px auto 0; }
+        .feature-card { background: var(--dark3); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 36px 30px; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; cursor: default; }
+        .feature-card:hover { transform: translateY(-8px); border-color: rgba(212,168,83,0.3); box-shadow: 0 24px 48px rgba(0,0,0,0.4); }
+        .feature-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 20px; }
+        .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+        .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+        .how-section { background: var(--dark2); }
+        .steps { display: flex; max-width: 1100px; margin: 60px auto 0; position: relative; }
+        .steps::before { content: ''; position: absolute; top: 32px; left: 10%; width: 80%; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); }
+        .step { flex: 1; text-align: center; padding: 0 20px; position: relative; }
+        .step-num { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #000; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; position: relative; z-index: 1; box-shadow: 0 8px 24px rgba(212,168,83,0.4); }
+        .step h4 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+        .step p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        .pricing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 60px auto 0; }
+        .price-card { background: var(--dark3); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 40px 32px; transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+        .price-card.featured { background: linear-gradient(135deg, rgba(212,168,83,0.12), rgba(245,200,66,0.05)); border-color: rgba(212,168,83,0.4); }
+        .price-card:hover { transform: translateY(-8px); box-shadow: 0 32px 64px rgba(0,0,0,0.4); }
+        .price-label { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+        .price-val { font-size: 40px; font-weight: 900; line-height: 1; }
+        .price-val .suffix { font-size: 18px; font-weight: 400; color: var(--text-muted); }
+        .price-desc { font-size: 14px; color: var(--text-muted); margin: 12px 0 28px; }
+        .price-features { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+        .price-features li { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+        .price-features li::before { content: '\2713'; color: var(--green); font-weight: 700; }
+        .featured-tag { position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg,var(--gold),var(--gold-light)); color: #000; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 50px; }
+        .price-btn { display: block; text-align: center; margin-top: 32px; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all 0.3s; }
+        .price-btn-outline { border: 1px solid rgba(255,255,255,0.15); color: var(--text); }
+        .price-btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+        .price-btn-gold { background: linear-gradient(135deg,var(--gold),var(--gold-light)); color: #000; }
+        .price-btn-gold:hover { box-shadow: 0 8px 24px rgba(212,168,83,0.4); transform: translateY(-2px); }
+        .cta-section { background: linear-gradient(135deg, rgba(212,168,83,0.12) 0%, rgba(13,13,13,1) 60%); border-top: 1px solid rgba(212,168,83,0.15); text-align: center; padding: 120px 60px; }
+        .cta-section h2 { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 800; margin-bottom: 20px; }
+        .cta-section h2 em { font-style: normal; background: linear-gradient(135deg,var(--gold),var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .cta-section p { color: var(--text-muted); font-size: 18px; margin-bottom: 44px; }
+        .contact-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 60px; }
+        .contact-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .contact-icon { font-size: 28px; }
+        .contact-label { font-size: 12px; color: var(--text-muted); }
+        .contact-val { font-size: 15px; font-weight: 600; color: var(--gold); }
+        footer { background: var(--dark); border-top: 1px solid rgba(255,255,255,0.06); padding: 32px 60px; text-align: center; color: var(--text-muted); font-size: 13px; }
+        footer strong { color: var(--gold); }
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .gold-text { background: linear-gradient(135deg,var(--gold),var(--gold-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        @media (max-width: 900px) {
+            nav { padding: 16px 24px; } .nav-links { display: none; }
+            section { padding: 60px 24px; } .hero { padding: 100px 24px 60px; }
+            .hero-stats { display: none; }
+            .pos-inner, .waiter-screens, .features-grid, .pricing-cards { grid-template-columns: 1fr; }
+            .steps { flex-direction: column; gap: 32px; } .steps::before { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo">Restaurant Management System</div>
+    <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#waiter">Waiter Screen</a>
+        <a href="#how">How It Works</a>
+        <a href="#pricing">Pricing</a>
+    </div>
+    <a href="#contact" class="nav-cta">Get a Demo &rarr;</a>
+</nav>
+
+<section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-badge"><span></span> Now Available for Restaurants</div>
+        <h1>Modern ERP for<br>Your <em>Restaurant</em><br>Business</h1>
+        <p>A complete, India-ready Restaurant Management System covering billing, GST, menu, inventory, and insightful reports in one powerful platform.</p>
+        <div class="hero-btns">
+            <a href="#features" class="btn-primary">&#127829; Explore Features</a>
+            <a href="#contact" class="btn-secondary">&#128222; Book a Free Demo</a>
+        </div>
+    </div>
+    <div class="hero-stats">
+        <div class="stat-card">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">GST Compliant</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">&#8734;</div>
+            <div class="stat-label">Menu Items</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">24/7</div>
+            <div class="stat-label">Support</div>
+        </div>
+    </div>
+</section>
+
+<section class="pos-section" id="demo">
+    <div class="pos-inner">
+        <div class="reveal">
+            <div class="section-tag">Live Demo</div>
+            <h2 class="section-title">Blazing Fast<br><em>POS Billing</em> Screen</h2>
+            <p class="section-sub">Your cashier gets a beautiful, image-rich billing screen. Just tap a dish to add it to the cart, and checkout in seconds.</p>
+            <br><br>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <div style="width:40px;height:40px;border-radius:10px;background:rgba(212,168,83,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;">&#9889;</div>
+                    <div><strong>Instant checkout</strong> &mdash; complete a bill in under 10 seconds</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <div style="width:40px;height:40px;border-radius:10px;background:rgba(212,168,83,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;">&#128247;</div>
+                    <div><strong>Visual menu</strong> &mdash; real food photos for every dish</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <div style="width:40px;height:40px;border-radius:10px;background:rgba(212,168,83,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;">&#129534;</div>
+                    <div><strong>Auto receipt print</strong> &mdash; branded 80mm thermal receipt</div>
+                </div>
+            </div>
+        </div>
+        <div class="pos-image-wrap reveal" style="transition-delay:0.2s;">
+            <div class="pos-badge">&#10022; LIVE PREVIEW</div>
+            <img src="Images/Screenshot%20from%202026-11-02%2021-56-57.png" alt="POS Billing Screen">
+        </div>
+    </div>
+</section>
+
+<section class="waiter-section" id="waiter">
+    <div class="waiter-inner">
+        <div style="text-align:center;" class="reveal">
+            <div class="section-tag">For Your Service Team</div>
+            <h2 class="section-title">A Smarter <em>Waiter Screen</em></h2>
+            <p class="section-sub" style="margin:0 auto;">Browse the menu, place table orders, check availability, and keep track of active orders from one simple screen.</p>
+        </div>
+        <div class="waiter-screens">
+            <figure class="waiter-screen reveal">
+                <img src="Images/Screenshot%20from%202026-11-02%2022-03-10.png" alt="Waiter screen showing menu items and adding dishes to a table order">
+                <figcaption>Browse menu items and add dishes to a table order.</figcaption>
+            </figure>
+            <figure class="waiter-screen reveal" style="transition-delay:0.15s;">
+                <img src="Images/Screenshot%20from%202026-11-02%2022-04-11.png" alt="Waiter screen showing available and occupied tables with active orders">
+                <figcaption>See available and occupied tables alongside active orders.</figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
+<section id="features">
+    <div style="text-align:center;max-width:700px;margin:0 auto;" class="reveal">
+        <div class="section-tag">What's Included</div>
+        <h2 class="section-title">Everything Your Restaurant<br><em>Needs to Thrive</em></h2>
+        <p class="section-sub" style="margin:0 auto;">From the cashier's screen to the accountant's dashboard &mdash; the Restaurant Management System covers every aspect of running a modern restaurant.</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card reveal">
+            <div class="feature-icon" style="background:rgba(212,168,83,0.12);">&#128722;</div>
+            <h3>Point of Sale (POS)</h3>
+            <p>Fast, touch-friendly billing with food images, category filters, Walk-In customer support, and multiple payment modes (Cash, Card, UPI).</p>
+        </div>
+        <div class="feature-card reveal" style="transition-delay:0.1s;">
+            <div class="feature-icon" style="background:rgba(46,204,113,0.12);">&#129534;</div>
+            <h3>GST-Ready Invoicing</h3>
+            <p>Automatic CGST &amp; SGST calculation on every bill. 100% compliant Sales Invoices generated instantly. Ready for GSTR filing.</p>
+        </div>
+        <div class="feature-card reveal" style="transition-delay:0.2s;">
+            <div class="feature-icon" style="background:rgba(255,107,53,0.12);">&#128203;</div>
+            <h3>Menu Management</h3>
+            <p>Add, edit, or remove dishes anytime. Organise by categories (Starters, Mains, Beverages). Upload real food photos to each item.</p>
+        </div>
+        <div class="feature-card reveal" style="transition-delay:0.05s;">
+            <div class="feature-icon" style="background:rgba(155,89,182,0.12);">&#128202;</div>
+            <h3>Reports &amp; Analytics</h3>
+            <p>Daily Sales Report, Item-wise bestsellers, Cash flow tracking, and full Profit &amp; Loss &mdash; all available with one click.</p>
+        </div>
+        <div class="feature-card reveal" style="transition-delay:0.15s;">
+            <div class="feature-icon" style="background:rgba(52,152,219,0.12);">&#128101;</div>
+            <h3>Staff &amp; User Management</h3>
+            <p>Create separate logins for each cashier, manager, or owner. Role-based access ensures the right people see the right data.</p>
+        </div>
+        <div class="feature-card reveal" style="transition-delay:0.25s;">
+            <div class="feature-icon" style="background:rgba(212,168,83,0.12);">&#128424;</div>
+            <h3>Custom Receipt Printing</h3>
+            <p>Branded receipts with your restaurant name and logo. Supports standard 80mm thermal printers. Fully customisable layout.</p>
+        </div>
+        <div class="feature-card reveal" style="transition-delay:0.1s;">
+            <div class="feature-icon" style="background:rgba(255,107,53,0.12);">&#128666;</div>
+            <h3>Online Order &amp; Parcel Management</h3>
+            <p>Manage orders from Zomato, Swiggy, Dunzo, and other delivery platforms in one place. Track preparation, pickup, and delivery status.</p>
+        </div>
+        <div class="feature-card reveal" style="transition-delay:0.2s;">
+            <div class="feature-icon" style="background:rgba(46,204,113,0.12);">&#127869;</div>
+            <h3>Table Booking &amp; Waiting Management</h3>
+            <p>Manage reservations and waiting guests, check available or occupied tables at a glance, and keep table orders organised as service progresses.</p>
+        </div>
+    </div>
+</section>
+
+<section class="how-section" id="how">
+    <div style="text-align:center;" class="reveal">
+        <div class="section-tag">Process</div>
+        <h2 class="section-title">Up &amp; Running in <em>4 Simple Steps</em></h2>
+    </div>
+    <div class="steps">
+        <div class="step reveal">
+            <div class="step-num">1</div>
+            <h4>Setup &amp; Install</h4>
+            <p>We install and configure the entire system on your cloud server or local machine.</p>
+        </div>
+        <div class="step reveal" style="transition-delay:0.1s;">
+            <div class="step-num">2</div>
+            <h4>Add Your Menu</h4>
+            <p>We upload all your dishes with photos, prices, categories, and GST rates.</p>
+        </div>
+        <div class="step reveal" style="transition-delay:0.2s;">
+            <div class="step-num">3</div>
+            <h4>Train Your Staff</h4>
+            <p>We provide a short training session. The POS interface is simple enough that staff learn in under 30 minutes.</p>
+        </div>
+        <div class="step reveal" style="transition-delay:0.3s;">
+            <div class="step-num">4</div>
+            <h4>Go Live!</h4>
+            <p>Start billing from Day 1. We stay on call for support for the first 30 days.</p>
+        </div>
+    </div>
+</section>
+
+<section style="background:var(--dark2);" id="pricing">
+    <div style="text-align:center;" class="reveal">
+        <div class="section-tag">Pricing</div>
+        <h2 class="section-title">Simple, <em>Transparent</em> Pricing</h2>
+        <p class="section-sub" style="margin:0 auto;">One-time setup cost. No hidden monthly surprises.</p>
+    </div>
+    <div class="pricing-cards">
+        <div class="price-card reveal">
+            <div class="price-label">Starter</div>
+            <div class="price-val">&#8377;25,000 <span class="suffix">one-time</span></div>
+            <div class="price-desc">Perfect for small cafes or single outlet restaurants</div>
+            <ul class="price-features">
+                <li>POS Billing Screen</li>
+                <li>GST Invoice</li>
+                <li>Menu Setup</li>
+                <li>Basic Sales Reports</li>
+                <li>2 Month Support</li>
+            </ul>
+            <a href="#contact" class="price-btn price-btn-outline">Get Started</a>
+        </div>
+        <div class="price-card featured reveal" style="transition-delay:0.1s;">
+            <div class="featured-tag">Most Popular</div>
+            <div class="price-label">Professional</div>
+            <div class="price-val gold-text">&#8377;50,000 <span class="suffix" style="color:var(--text-muted);-webkit-text-fill-color:var(--text-muted);">one-time</span></div>
+            <div class="price-desc">Ideal for full-scale restaurants with multiple staff</div>
+            <ul class="price-features">
+                <li>Everything in Starter</li>
+                <li>Menu Setup</li>
+                <li>Multi-user &amp; Role Management</li>
+                <li>Advanced Analytics</li>
+                <li>5 Months Support</li>
+            </ul>
+            <a href="#contact" class="price-btn price-btn-gold">Get Started</a>
+        </div>
+        <div class="price-card reveal" style="transition-delay:0.2s;">
+            <div class="price-label">Enterprise</div>
+            <div class="price-val">Custom</div>
+            <div class="price-desc">Multi-outlet chains and franchise businesses</div>
+            <ul class="price-features">
+                <li>Everything in Professional</li>
+                <li>Multi-Branch Management</li>
+                <li>Central Reporting Dashboard</li>
+                <li>Custom Integrations</li>
+                <li>Dedicated Account Manager</li>
+                <li>1 Year Priority Support</li>
+            </ul>
+            <a href="#contact" class="price-btn price-btn-outline">Contact Us</a>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section" id="contact">
+    <div class="reveal">
+        <h2>Ready to Transform Your<br><em>Restaurant?</em></h2>
+        <p>Book a free 30-minute live demo. We'll walk you through the entire system on a real device.</p>
+        <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+            <a href="mailto:demo@restrosync.in" class="btn-primary" style="font-size:16px;padding:18px 40px;">&#128231; Email Us for a Demo</a>
+            <a href="tel:+910000000000" class="btn-secondary" style="font-size:16px;padding:18px 40px;">&#128222; Call Us Now</a>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <div class="contact-icon">&#128231;</div>
+                <div class="contact-label">Email</div>
+                <div class="contact-val">jaypbankar2001@gmail.com</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon">&#128222;</div>
+                <div class="contact-label">Phone / WhatsApp</div>
+                <div class="contact-val">+91-7499890917</div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-icon">&#128336;</div>
+                <div class="contact-label">Response Time</div>
+                <div class="contact-val">Within 2 Hours</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 <strong>Restaurant Management System</strong> &mdash; Smart Restaurant Management Solution. Built with &hearts; for restaurants.</p>
+</footer>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    window.addEventListener('scroll', () => {
+        document.querySelector('nav').style.background =
+            window.scrollY > 50 ? 'rgba(13,13,13,0.98)' : 'rgba(13,13,13,0.92)';
+    });
+</script>
+</body>
+</html>
